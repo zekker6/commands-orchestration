@@ -1,14 +1,33 @@
 package main
 
 import (
+	"bufio"
 	"flag"
+	"github.com/fatih/color"
 	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"os/exec"
 	"sync"
 )
+
+var AvaiableColors = []color.Attribute{
+	color.FgRed,
+	color.FgGreen,
+	color.FgYellow,
+	color.FgBlue,
+	color.FgMagenta,
+	color.FgCyan,
+	color.FgWhite,
+}
+
+func randomColor() color.Attribute {
+	return AvaiableColors[rand.Intn(len(AvaiableColors))]
+
+}
 
 type stage struct {
 	Steps []string `yaml:"steps"`
@@ -33,15 +52,69 @@ func NewPlay(stages []stage) *play {
 
 func (p *play) runBackground(command string) {
 	cmd := exec.Command("bash", "-c", command)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	err := cmd.Start()
-	if err != nil {
-		p.errorChan <- err
+
+	handleErr := func(err error) bool {
+		if err != nil {
+			p.errorChan <- err
+			p.wg.Done()
+			return false
+		}
+
+		return true
 	}
 
-	cmd.Wait()
+	stdout, e := cmd.StdoutPipe()
+	if !handleErr(e) {
+		return
+	}
+
+	stderr, e := cmd.StderrPipe()
+	if !handleErr(e) {
+		return
+	}
+	col := randomColor()
+	colorize := color.New(col).FprintFunc()
+
+	go func(stdout, stderr io.Reader, colorize func(w io.Writer, a ...interface{})) {
+		go func() {
+			reader := bufio.NewReader(stdout)
+			for {
+				line, err := reader.ReadString('\n')
+				if err != nil {
+					break
+				}
+
+				colorize(os.Stdout, line)
+			}
+		}()
+
+		go func() {
+			reader := bufio.NewReader(stderr)
+			for {
+				line, err := reader.ReadString('\n')
+				if err != nil {
+					break
+				}
+
+				colorize(os.Stderr, line)
+			}
+		}()
+	}(stdout, stderr, colorize)
+
+	colorize(os.Stdout, "Starting: ", command, "\n")
+	err := cmd.Start()
+	if !handleErr(e) {
+		return
+	}
+
+	err = cmd.Wait()
+	if !handleErr(err) {
+		return
+	}
+
 	p.wg.Done()
+
+	colorize(os.Stdout, "Finished: ", command, "\n")
 }
 
 func (p *play) printErrors() {
@@ -51,6 +124,8 @@ func (p *play) printErrors() {
 }
 
 func (p *play) Run() {
+	go p.printErrors()
+
 	for _, stage := range p.Stages {
 		p.wg.Add(len(stage.Steps))
 		for _, command := range stage.Steps {
@@ -62,6 +137,11 @@ func (p *play) Run() {
 
 func main() {
 	flag.Parse()
+
+	if len(os.Args) < 2 {
+		log.Print("Specify file to run")
+		return
+	}
 
 	data, err := ioutil.ReadFile(flag.Arg(0))
 	if err != nil {
