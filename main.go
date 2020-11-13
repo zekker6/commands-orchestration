@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	"flag"
+	"fmt"
 	"github.com/fatih/color"
+	"github.com/martinlindhe/notify"
 	"gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
@@ -14,7 +16,7 @@ import (
 	"sync"
 )
 
-var AvaiableColors = []color.Attribute{
+var AvailableColors = []color.Attribute{
 	color.FgRed,
 	color.FgGreen,
 	color.FgYellow,
@@ -25,7 +27,7 @@ var AvaiableColors = []color.Attribute{
 }
 
 func randomColor() color.Attribute {
-	return AvaiableColors[rand.Intn(len(AvaiableColors))]
+	return AvailableColors[rand.Intn(len(AvailableColors))]
 
 }
 
@@ -57,6 +59,8 @@ func (p *play) runBackground(command string) {
 		if err != nil {
 			p.errorChan <- err
 			p.wg.Done()
+
+			notify.Alert("co", "Command failed", fmt.Sprintf("%s exited with %+v", command, err), "")
 			return false
 		}
 
