@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"sync"
+	"time"
 )
 
 var AvailableColors = []color.Attribute{
@@ -103,7 +104,8 @@ func (p *play) runBackground(command string) {
 		}()
 	}(stdout, stderr, colorize)
 
-	colorize(os.Stdout, "Starting: ", command, "\n")
+
+	colorize(os.Stdout, fmt.Sprintf("[%s] Starting: ", time.Now().Format("15:04:05")), command, "\n")
 	err := cmd.Start()
 	if !handleErr(e) {
 		return
@@ -116,7 +118,7 @@ func (p *play) runBackground(command string) {
 
 	p.wg.Done()
 
-	colorize(os.Stdout, "Finished: ", command, "\n")
+	colorize(os.Stdout, fmt.Sprintf("[%s] Finished: ", time.Now().Format("15:04:05")), command, "\n")
 }
 
 func (p *play) printErrors() {
