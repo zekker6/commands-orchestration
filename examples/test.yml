@@ -1,0 +1,12 @@
+play:
+  - steps:
+      - sleep 10
+      - ./examples/test.sh
+      - exit 121
+
+
+  - steps:
+      - sleep 2
+      - ./examples/test.sh
+      - ./examples/test.sh
+      - exit 1
