@@ -17,13 +17,11 @@ import (
 )
 
 var AvailableColors = []color.Attribute{
-	color.FgRed,
 	color.FgGreen,
 	color.FgYellow,
 	color.FgBlue,
 	color.FgMagenta,
 	color.FgCyan,
-	color.FgWhite,
 }
 
 func randomColor() color.Attribute {
