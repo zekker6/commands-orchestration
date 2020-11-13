@@ -30,6 +30,8 @@ var AvailableColors = []color.Attribute{
 
 const TimeFormat = "15:04:05"
 
+var binaryName = filepath.Base(os.Args[0])
+
 func randomColor() color.Attribute {
 	return AvailableColors[rand.Intn(len(AvailableColors))]
 }
@@ -103,7 +105,7 @@ func (t *task) Run() {
 			t.Success = false
 			t.EndedAt = time.Now()
 
-			notify.Notify(os.Args[0], "Command failed", fmt.Sprintf("%s exited with %+v", t.Cmd.Args, err), "")
+			notify.Notify(binaryName, "Command failed", fmt.Sprintf("%s exited with %+v", t.Cmd.Args, err), "")
 			return false
 		}
 
@@ -152,6 +154,13 @@ func (t *task) Run() {
 	t.EndedAt = time.Now()
 	colorize(os.Stdout, fmt.Sprintf("[%s] Finished: ", t.EndedAt.Format(TimeFormat)), t.Cmd.Args, "\n")
 	t.Success = true
+
+	// Notify when long-running tasks finishes
+	diffTime := t.EndedAt.Sub(t.StartedAt)
+	if diffTime.Minutes() > 5 {
+		msg := fmt.Sprintf("%s finished after %s", t.Cmd.Args, diffTime.String())
+		notify.Notify(binaryName, "Command finished", msg, "")
+	}
 }
 
 func NewTask(name, command string, parent *play) *task {
@@ -198,7 +207,7 @@ func (p *play) Run() {
 }
 
 func (p *play) getLogsDir() string {
-	return "/tmp/" + filepath.Base(os.Args[0]) + "_log"
+	return "/tmp/" + binaryName + "_log"
 }
 
 func (p *play) DumpLogs() {
