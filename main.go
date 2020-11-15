@@ -32,6 +32,12 @@ const TimeFormat = "15:04:05"
 
 var binaryName = filepath.Base(os.Args[0])
 
+var (
+	version string
+	commit  string
+	date    string
+)
+
 func randomColor() color.Attribute {
 	return AvailableColors[rand.Intn(len(AvailableColors))]
 }
@@ -257,12 +263,27 @@ func (p *play) PrintResults() {
 	table.Render()
 }
 
+func printVersion() {
+	log.Printf("Version: %s, Commit: %s, Date: %s", version, commit, date)
+}
+
+func printUsage() {
+	log.Print("Specify config path")
+	log.Print("Usage: ", os.Args[0], " [config path]")
+}
+
 func main() {
+	v := flag.Bool("v", false, "Print version end exit")
 	flag.Parse()
 
+	if *v {
+		printVersion()
+		return
+	}
+
 	if len(os.Args) < 2 {
-		log.Print("Specify config path")
-		log.Print("Usage: ", os.Args[0], " [config path]")
+		printUsage()
+		printVersion()
 		return
 	}
 
