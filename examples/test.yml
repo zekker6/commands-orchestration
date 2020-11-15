@@ -1,9 +1,15 @@
+vars:
+  test: 123
+  sleep_time: 1
+
 play:
   - steps:
-      - sleep 10
+      - sleep {{.sleep_time}}
       - ./examples/test.sh
       - exit 121
 
+  - steps:
+      - echo {{.test}}
 
   - steps:
       - sleep 2

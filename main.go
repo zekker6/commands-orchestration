@@ -17,6 +17,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"text/template"
 	"time"
 )
 
@@ -60,6 +61,7 @@ type stage struct {
 }
 
 type play struct {
+	Vars      map[string]string
 	wg        *sync.WaitGroup
 	Stages    []stage `yaml:"play"`
 	errorChan chan error
@@ -170,7 +172,16 @@ func (t *task) Run() {
 }
 
 func NewTask(name, command string, parent *play) *task {
-	cmd := exec.Command("bash", "-c", command)
+	t := template.Must(template.New("task").Parse(command))
+
+	var commandBuilder strings.Builder
+	e := t.Execute(&commandBuilder, parent.Vars)
+	if e != nil {
+		parent.errorChan <- e
+		return nil
+	}
+
+	cmd := exec.Command("bash", "-c", commandBuilder.String())
 	return &task{
 		StartedAt: time.Now(),
 		EndedAt:   time.Now(),
@@ -180,12 +191,13 @@ func NewTask(name, command string, parent *play) *task {
 	}
 }
 
-func NewPlay(stages []stage) *play {
+func NewPlay(stages []stage, vars map[string]string) *play {
 	wg := new(sync.WaitGroup)
 	errorChan := make(chan error)
 
 	return &play{
 		wg:        wg,
+		Vars:      vars,
 		Stages:    stages,
 		errorChan: errorChan,
 	}
@@ -298,7 +310,7 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	pl := NewPlay(p.Stages)
+	pl := NewPlay(p.Stages, p.Vars)
 
 	pl.Run()
 	log.Print("Finished run")
