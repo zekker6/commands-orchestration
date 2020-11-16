@@ -2,6 +2,7 @@ package main
 
 import (
 	"commands-orchestration/play"
+	"commands-orchestration/updater"
 	"flag"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -26,6 +27,7 @@ func printUsage() {
 
 func main() {
 	v := flag.Bool("v", false, "Print version end exit")
+	update := flag.Bool("u", false, "Check if newer version is available and update")
 	flag.Parse()
 
 	if *v {
@@ -39,7 +41,12 @@ func main() {
 		return
 	}
 
-	data, err := ioutil.ReadFile(flag.Arg(0))
+	if *update {
+		updater.DoSelfUpdate(version)
+		return
+	}
+
+	data, err := ioutil.ReadFile("commands-orchestration")
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
