@@ -27,28 +27,8 @@ func printUsage() {
 	flag.Usage()
 }
 
-func main() {
-	v := flag.Bool("v", false, "Print version end exit")
-	update := flag.Bool("u", false, "Check if newer version is available and self-update")
-	flag.Parse()
-
-	if *v {
-		printVersion()
-		return
-	}
-
-	if len(os.Args) < 2 {
-		printUsage()
-		printVersion()
-		return
-	}
-
-	if *update {
-		updater.DoSelfUpdate(version)
-		return
-	}
-
-	data, err := ioutil.ReadFile(flag.Arg(0))
+func readConfig(path string) *play.Play {
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -61,8 +41,33 @@ func main() {
 
 	pl := play.NewPlay(p.Stages, p.Vars)
 
+	return pl
+}
+
+func main() {
+	v := flag.Bool("v", false, "Print version end exit")
+	update := flag.Bool("u", false, "Check if newer version is available and self-update")
+	flag.Parse()
+
+	if *v {
+		printVersion()
+		return
+	}
+
+	if *update {
+		updater.DoSelfUpdate(version)
+		return
+	}
+
+	if len(os.Args) < 2 {
+		printUsage()
+		printVersion()
+		return
+	}
+
+	pl := readConfig(flag.Arg(0))
+
 	pl.Run()
-	log.Print("Finished run")
 
 	pl.DumpLogs()
 	pl.PrintResults()
