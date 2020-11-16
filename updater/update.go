@@ -34,9 +34,14 @@ func DoSelfUpdate(currentVersion string) {
 		return
 	}
 
-	if err := selfupdate.UpdateTo(latest.AssetURL, "commands-orchestration"); err != nil {
+	exe, err := os.Executable()
+	if err != nil {
+		log.Println("Could not locate executable path")
+		return
+	}
+	if err := selfupdate.UpdateTo(latest.AssetURL, exe); err != nil {
 		log.Println("Error occurred while updating binary:", err)
 		return
 	}
-	log.Println("Successfully updated to version", latest.Version)
+	log.Println("Successfully updated to version", latest.Version, latest.ReleaseNotes)
 }
