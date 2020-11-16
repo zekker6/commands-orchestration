@@ -11,8 +11,10 @@ This can easily be achieved by using bash `&` but you will not be able to wait u
 
 Tool usage is:
 ```sh
-2020/11/13 22:48:07 Specify config path
-2020/11/13 22:48:07 Usage: co [config path]
+Usage: commands-orchestration [config path]
+  -u    Check if newer version is available and self-update
+  -v    Print version end exit
+
 ```
 
 It takes config of the following format:
@@ -37,7 +39,7 @@ play:
       - exit 1
 ```
 
-And executes steps one by one by running all commands of single step in parallel. So in example above there will be 3 parallel run on the first step and 4 for second step.
+And executes steps one by one. Step is running all commands of single step in parallel. So in example above there will be 3 parallel run on the first step and 4 for second step.
 Output is piped into back into terminal.
 
 ## Output

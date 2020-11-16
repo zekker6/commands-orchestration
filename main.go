@@ -23,11 +23,13 @@ func printVersion() {
 func printUsage() {
 	log.Print("Specify config path")
 	log.Print("Usage: ", os.Args[0], " [config path]")
+
+	flag.Usage()
 }
 
 func main() {
 	v := flag.Bool("v", false, "Print version end exit")
-	update := flag.Bool("u", false, "Check if newer version is available and update")
+	update := flag.Bool("u", false, "Check if newer version is available and self-update")
 	flag.Parse()
 
 	if *v {
