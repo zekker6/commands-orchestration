@@ -48,7 +48,7 @@ func main() {
 		return
 	}
 
-	data, err := ioutil.ReadFile("commands-orchestration")
+	data, err := ioutil.ReadFile(flag.Arg(0))
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
