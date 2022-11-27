@@ -4,20 +4,23 @@ A simple tools which allows to run set of shell commands in a script like manner
 
 ## Why?
 
-An initial problem which this tool tries to solve is to run several subscripts in parallel. 
-This can easily be achieved by using bash `&` but you will not be able to wait until all background tasks will be finished to run next loop.
+An initial problem which this tool tries to solve is to run several subscripts in parallel.
+This can easily be achieved by using bash `&` but you will not be able to wait until all background tasks will be
+finished to run next loop.
 
 ## How?
 
 Tool usage is:
+
 ```sh
-Usage: commands-orchestration [config path]
   -u    Check if newer version is available and self-update
   -v    Print version end exit
+  -vv   Verbose output
 
 ```
 
 It takes config of the following format:
+
 ```
 vars:
   test: 123
@@ -39,12 +42,14 @@ play:
       - exit 1
 ```
 
-And executes steps one by one. Step is running all commands of single step in parallel. So in example above there will be 3 parallel run on the first step and 4 for second step.
+And executes steps one by one. Step is running all commands of single step in parallel. So in example above there will
+be 3 parallel run on the first step and 4 for second step.
 Output is piped into back into terminal.
 
 ## Output
 
 In result run it will print table with run summary and also dump all output to temporary location. Example output:
+
 ```
 NAME    START           END             DURATION        STATUS  COMMAND                 LOGS AT                                   
 0_0     16:46:09        16:46:10        1.004608292s    success  sleep 1                /tmp/___go_build_main_go_log/0_0/full.log       
@@ -59,10 +64,12 @@ NAME    START           END             DURATION        STATUS  COMMAND         
 
 ## Vars templating
 
-It is possible to use templating for commands. In order to specify variables for templating define `vars` top level key with set of values.
+It is possible to use templating for commands. In order to specify variables for templating define `vars` top level key
+with set of values.
 In the command it is required to add gotpl syntax expression to reference variable name.
 
 For example:
+
 ```
 vars:
     here_goes_keys: "value"

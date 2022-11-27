@@ -1,13 +1,14 @@
 package main
 
 import (
-	"commands-orchestration/play"
-	"commands-orchestration/updater"
 	"flag"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
 	"log"
 	"os"
+
+	"commands-orchestration/play"
+	"commands-orchestration/updater"
+
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -28,7 +29,7 @@ func printUsage() {
 }
 
 func readConfig(path string) *play.Play {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -47,6 +48,7 @@ func readConfig(path string) *play.Play {
 func main() {
 	v := flag.Bool("v", false, "Print version end exit")
 	update := flag.Bool("u", false, "Check if newer version is available and self-update")
+	verbose := flag.Bool("vv", false, "Verbose output")
 	flag.Parse()
 
 	if *v {
@@ -67,7 +69,7 @@ func main() {
 
 	pl := readConfig(flag.Arg(0))
 
-	pl.Run()
+	pl.Run(*verbose)
 
 	pl.DumpLogs()
 	pl.PrintResults()

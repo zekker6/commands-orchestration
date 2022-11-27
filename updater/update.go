@@ -3,10 +3,11 @@ package updater
 import (
 	"bufio"
 	"fmt"
-	"github.com/blang/semver"
-	"github.com/rhysd/go-github-selfupdate/selfupdate"
 	"log"
 	"os"
+
+	"github.com/blang/semver"
+	"github.com/rhysd/go-github-selfupdate/selfupdate"
 )
 
 func DoSelfUpdate(currentVersion string) {

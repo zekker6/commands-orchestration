@@ -3,10 +3,7 @@ package play
 import (
 	"bufio"
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/martinlindhe/notify"
 	"io"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -14,6 +11,9 @@ import (
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/fatih/color"
+	"github.com/martinlindhe/notify"
 )
 
 const TimeFormat = "15:04:05"
@@ -24,14 +24,16 @@ func randomColor() color.Attribute {
 	return AvailableColors[rand.Intn(len(AvailableColors))]
 }
 
-func colorizeAndWrite(colorize func(w io.Writer, a ...interface{}), input io.Reader, out io.Writer, cb func(string)) {
+func colorizeAndWrite(prefix string, colorize func(w io.Writer, a ...interface{}), input io.Reader, out io.Writer, cb func(string)) {
 	reader := bufio.NewReader(input)
 	for {
 		line, err := reader.ReadString('\n')
 		if err != nil {
 			break
 		}
-
+		if len(prefix) > 0 {
+			line = prefix + ": " + line
+		}
 		colorize(out, line)
 		cb(line)
 	}
@@ -55,17 +57,17 @@ func (t *task) DumpOutput(to string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(to+"/"+t.Name+"/stdout.log", []byte(t.Stdout), 0644)
+	err = os.WriteFile(to+"/"+t.Name+"/stdout.log", []byte(t.Stdout), 0644)
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(to+"/"+t.Name+"/stderr.log", []byte(t.Stderr), 0644)
+	err = os.WriteFile(to+"/"+t.Name+"/stderr.log", []byte(t.Stderr), 0644)
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile(to+"/"+t.Name+"/full.log", []byte(t.FullOutput), 0644)
+	err = os.WriteFile(to+"/"+t.Name+"/full.log", []byte(t.FullOutput), 0644)
 	if err != nil {
 		return err
 	}
@@ -73,7 +75,7 @@ func (t *task) DumpOutput(to string) error {
 	return nil
 }
 
-func (t *task) Run() {
+func (t *task) Run(verbose bool) {
 	handleErr := func(err error) bool {
 		if err != nil {
 			t.p.errorChan <- err
@@ -110,8 +112,12 @@ func (t *task) Run() {
 		t.FullOutput = t.FullOutput + out
 	}
 
-	go colorizeAndWrite(colorize, stdout, os.Stdout, saveStdout)
-	go colorizeAndWrite(colorize, stderr, os.Stderr, saveStderr)
+	prefix := ""
+	if verbose {
+		prefix = strings.Join(t.Cmd.Args, " ")
+	}
+	go colorizeAndWrite(prefix, colorize, stdout, os.Stdout, saveStdout)
+	go colorizeAndWrite(prefix, colorize, stderr, os.Stderr, saveStderr)
 
 	t.StartedAt = time.Now()
 	colorize(os.Stdout, fmt.Sprintf("[%s] Starting: ", t.StartedAt.Format(TimeFormat)), t.Cmd.Args, "\n")
@@ -139,7 +145,7 @@ func (t *task) Run() {
 	}
 }
 
-func NewTask(name, command string, parent *Play) *task {
+func newTask(name, command string, parent *Play) *task {
 	t := template.Must(template.New("task").Parse(command))
 
 	var commandBuilder strings.Builder

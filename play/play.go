@@ -2,11 +2,12 @@ package play
 
 import (
 	"fmt"
-	"github.com/olekukonko/tablewriter"
 	"log"
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 type Stage struct {
@@ -40,16 +41,16 @@ func (p *Play) printErrors() {
 	}
 }
 
-func (p *Play) Run() {
+func (p *Play) Run(verbose bool) {
 	go p.printErrors()
 
 	for stageIdx, stage := range p.Stages {
 		p.wg.Add(len(stage.Steps))
 		for taskIdx, command := range stage.Steps {
-			t := NewTask(fmt.Sprintf("%d_%d", stageIdx, taskIdx), command, p)
+			t := newTask(fmt.Sprintf("%d_%d", stageIdx, taskIdx), command, p)
 			p.tasks = append(p.tasks, t)
 
-			go t.Run()
+			go t.Run(verbose)
 		}
 		p.wg.Wait()
 	}
