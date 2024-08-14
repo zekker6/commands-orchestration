@@ -8,7 +8,7 @@ require (
 	github.com/martinlindhe/notify v0.0.0-20181008203735-20632c9a275a
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rhysd/go-github-selfupdate v1.2.3
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v2 v2.2.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
