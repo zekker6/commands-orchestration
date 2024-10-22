@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/fatih/color v1.17.0
+	github.com/fatih/color v1.18.0
 	github.com/martinlindhe/notify v0.0.0-20181008203735-20632c9a275a
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rhysd/go-github-selfupdate v1.2.3
@@ -26,7 +26,7 @@ require (
 	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/oauth2 v0.22.0 // indirect
-	golang.org/x/sys v0.24.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
 	gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
