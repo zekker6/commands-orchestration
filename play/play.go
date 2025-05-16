@@ -85,13 +85,13 @@ func (p *Play) PrintResults() {
 			t.EndedAt.Format(TimeFormat),
 			t.EndedAt.Sub(t.StartedAt).String(),
 			status,
-			strings.Replace(strings.Join(t.Cmd.Args, " "), "bash -c", "", -1),
+			strings.ReplaceAll(strings.Join(t.Cmd.Args, " "), "bash -c", ""),
 			p.getLogsDir() + "/" + t.Name + "/full.log",
 		})
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.Header([]string{"Name", "Start", "End", "Duration", "Status", "Command", "Logs at"})
-	table.Append(data)
-	table.Render()
+	_ = table.Append(data)
+	_ = table.Render()
 }

@@ -122,7 +122,7 @@ func (t *task) Run(verbose bool) {
 	t.StartedAt = time.Now()
 	colorize(os.Stdout, fmt.Sprintf("[%s] Starting: ", t.StartedAt.Format(TimeFormat)), t.Cmd.Args, "\n")
 	err := t.Cmd.Start()
-	if !handleErr(e) {
+	if !handleErr(err) {
 		return
 	}
 
