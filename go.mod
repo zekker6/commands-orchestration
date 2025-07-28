@@ -8,7 +8,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/fatih/color v1.18.0
 	github.com/martinlindhe/notify v0.0.0-20181008203735-20632c9a275a
-	github.com/olekukonko/tablewriter v1.0.8
+	github.com/olekukonko/tablewriter v1.0.9
 	github.com/rhysd/go-github-selfupdate v1.2.3
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -22,8 +22,8 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
-	github.com/olekukonko/errors v0.0.0-20250405072817-4e6d85265da6 // indirect
-	github.com/olekukonko/ll v0.0.8 // indirect
+	github.com/olekukonko/errors v1.1.0 // indirect
+	github.com/olekukonko/ll v0.0.9 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/tcnksm/go-gitconfig v0.1.2 // indirect
 	github.com/ulikunitz/xz v0.5.12 // indirect
