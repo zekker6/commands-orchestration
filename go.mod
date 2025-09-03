@@ -2,7 +2,7 @@ module commands-orchestration
 
 go 1.23.0
 
-toolchain go1.25.0
+toolchain go1.25.1
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
