@@ -8,7 +8,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/fatih/color v1.18.0
 	github.com/martinlindhe/notify v0.0.0-20181008203735-20632c9a275a
-	github.com/olekukonko/tablewriter v1.0.9
+	github.com/olekukonko/tablewriter v1.1.0
 	github.com/rhysd/go-github-selfupdate v1.2.3
 	gopkg.in/yaml.v3 v3.0.1
 )
