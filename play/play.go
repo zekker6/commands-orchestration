@@ -19,11 +19,12 @@ type Play struct {
 	wg        *sync.WaitGroup
 	Stages    []Stage `yaml:"play"`
 	errorChan chan error
+	hasTTY    bool
 
 	tasks []*task
 }
 
-func NewPlay(stages []Stage, vars map[string]string) *Play {
+func NewPlay(stages []Stage, vars map[string]string, hasTTY bool) *Play {
 	wg := new(sync.WaitGroup)
 	errorChan := make(chan error)
 
@@ -32,10 +33,15 @@ func NewPlay(stages []Stage, vars map[string]string) *Play {
 		Vars:      vars,
 		Stages:    stages,
 		errorChan: errorChan,
+		hasTTY:    hasTTY,
 	}
 }
 
 func (p *Play) printErrors() {
+	if !p.hasTTY {
+		return
+	}
+
 	for er := range p.errorChan {
 		log.Print("Error during execution: ", er)
 	}
@@ -61,6 +67,10 @@ func (p *Play) getLogsDir() string {
 }
 
 func (p *Play) DumpLogs() {
+	if !p.hasTTY {
+		return
+	}
+
 	for _, t := range p.tasks {
 		err := t.DumpOutput(p.getLogsDir())
 		if err != nil {
@@ -70,6 +80,10 @@ func (p *Play) DumpLogs() {
 }
 
 func (p *Play) PrintResults() {
+	if !p.hasTTY {
+		return
+	}
+
 	var data [][]string
 
 	for _, t := range p.tasks {

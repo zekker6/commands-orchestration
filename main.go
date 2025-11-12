@@ -8,6 +8,7 @@ import (
 	"commands-orchestration/play"
 	"commands-orchestration/updater"
 
+	"github.com/mattn/go-isatty"
 	"gopkg.in/yaml.v3"
 )
 
@@ -28,7 +29,7 @@ func printUsage() {
 	flag.Usage()
 }
 
-func readConfig(path string) *play.Play {
+func readConfig(path string, hasTTY bool) *play.Play {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatalf("error: %v", err)
@@ -40,7 +41,7 @@ func readConfig(path string) *play.Play {
 		log.Fatalf("error: %v", err)
 	}
 
-	pl := play.NewPlay(p.Stages, p.Vars)
+	pl := play.NewPlay(p.Stages, p.Vars, hasTTY)
 
 	return pl
 }
@@ -67,7 +68,9 @@ func main() {
 		return
 	}
 
-	pl := readConfig(flag.Arg(0))
+	hasTTY := isatty.IsTerminal(os.Stdout.Fd()) || isatty.IsCygwinTerminal(os.Stdout.Fd())
+
+	pl := readConfig(flag.Arg(0), hasTTY)
 
 	pl.Run(*verbose)
 

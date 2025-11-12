@@ -1,6 +1,11 @@
 package play
 
-import "github.com/fatih/color"
+import (
+	"os"
+
+	"github.com/fatih/color"
+	"github.com/mattn/go-isatty"
+)
 
 var AvailableColors = []color.Attribute{
 	color.FgGreen,
@@ -8,4 +13,10 @@ var AvailableColors = []color.Attribute{
 	color.FgBlue,
 	color.FgMagenta,
 	color.FgCyan,
+}
+
+func init() {
+	if !isatty.IsTerminal(os.Stdout.Fd()) && !isatty.IsCygwinTerminal(os.Stdout.Fd()) {
+		color.NoColor = true
+	}
 }
