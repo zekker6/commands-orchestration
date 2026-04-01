@@ -1,12 +1,12 @@
 module commands-orchestration
 
-go 1.23.0
+go 1.25.0
 
 toolchain go1.26.1
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/fatih/color v1.18.0
+	github.com/fatih/color v1.19.0
 	github.com/martinlindhe/notify v0.0.0-20181008203735-20632c9a275a
 	github.com/mattn/go-isatty v0.0.20
 	github.com/olekukonko/tablewriter v1.1.3
@@ -33,7 +33,7 @@ require (
 	github.com/ulikunitz/xz v0.5.12 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
 	gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
