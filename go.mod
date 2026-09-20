@@ -9,7 +9,7 @@ require (
 	github.com/fatih/color v1.19.0
 	github.com/martinlindhe/notify v0.0.0-20181008203735-20632c9a275a
 	github.com/mattn/go-isatty v0.0.24
-	github.com/olekukonko/tablewriter v1.1.4
+	github.com/olekukonko/tablewriter v1.1.5
 	github.com/rhysd/go-github-selfupdate v1.2.3
 	gopkg.in/yaml.v3 v3.0.1
 )
